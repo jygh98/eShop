@@ -1,12 +1,19 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from flask_restful import Resource, Api, reqparser
+from flask_jwt import JWT, jwt_required
+
+from security import authenticate, identity
 
 app = Flask(__name__)
+app.secret_key = 'secret'
 api = Api(app)
+
+jwt = JWT(app, authenticate, identity)
 
 items = []
 
 class Item(Resource):
+    @jwt_required
     parser = reqparse.RequestParser()
     parser.add_argument('price',
         type=float,
