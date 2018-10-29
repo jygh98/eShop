@@ -3,7 +3,6 @@ from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 
 class Item(Resource):
-    @jwt_required
     parser = reqparse.RequestParser()
     parser.add_argument('price',
         type=float,
@@ -12,7 +11,7 @@ class Item(Resource):
     )
 
     def get(self, name):
-		item = Item.find_by_name(name)
+        item = Item.find_by_name(name)
         if item:
             return item
         return {'message': 'Item not found'}, 404
@@ -29,10 +28,9 @@ class Item(Resource):
 
         if row:
             return {'item': {'name': row[0], 'price': row[1]}}
-        return {'message': 'Item not found'}, 404
 
-	def post(self, name):
-		if Item.find_by_name(name):
+    def post(self, name):
+        if Item.find_by_name(name):
             return {'message': "An item with name '{}' already exists".format(name)}, 400
         data = Item.parser.parse_args()
         item = {'name': name, 'price': data['price']}
@@ -55,7 +53,7 @@ class Item(Resource):
         connection.commit()
         connection.close()
 
-	def delete(self, name):
+    def delete(self, name):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -68,8 +66,8 @@ class Item(Resource):
         return {'message': 'Item deleted'}
 
 
-	def put(self, name):
-		data = Item.parser.parse_args()
+    def put(self, name):
+        data = Item.parser.parse_args()
 
         item = self.find_by_name(name)
         updated_item = {'name': name, 'price': data['price']}
@@ -100,7 +98,7 @@ class Item(Resource):
         return {'message': 'Item deleted'}
 
 class ItemList(Resource):
-	def get(self):
+    def get(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
