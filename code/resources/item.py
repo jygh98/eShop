@@ -9,7 +9,6 @@ class Item(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
-    parser = reqparse.RequestParser()
     parser.add_argument('store_id',
         type=int,
         required=True,
@@ -27,7 +26,6 @@ class Item(Resource):
         if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists".format(name)}, 400
         data = Item.parser.parse_args()
-        print(data)
         item = ItemModel(name, **data)
 
         try:
